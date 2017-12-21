@@ -1,0 +1,45 @@
+{
+  "name": "genetica",
+  "version": "0.0.1",
+  "description": "This is a tool for using a simplified genetics system to generate inheritable traits for DnD characters.",
+  "main": "lib/genetica.js",
+  "scripts": {
+    "start": "bin/genetica",
+    "test": "npm run test:mocha && npm run test:lint",
+    "test:mocha": "mocha --reporter spec 'test/**/*.js'",
+    "test:lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opendnd/genetica.git"
+  },
+  "keywords": [
+    "genetics",
+    "dungeons",
+    "dragons",
+    "DnD"
+  ],
+  "author": "Drew Morris <dhmorris@gmail.com> (http://github.com/drewry)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/opendnd/genetica/issues"
+  },
+  "homepage": "https://github.com/opendnd/genetica#readme",
+  "bin": {
+    "genetica": "./bin/genetica"
+  },
+  "dependencies": {
+    "colors": "^1.1.2",
+    "commander": "^2.11.0",
+    "node-zip": "^1.1.1",
+    "questions": "0.0.6",
+    "roll": "^1.2.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^3.16.1",
+    "eslint-config-airbnb-base": "^11.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.5.0"
+  }
+}

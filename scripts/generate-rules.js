@@ -6,25 +6,26 @@ const dataDir = path.join(libDir, 'data');
 const defaults = require(path.join(libDir, 'defaults'));
 
 // generate all possible rules for a dice
-const generateRules = (dice) => {
+const generateRules = (dice, doNsqd = true) => {
   const n = parseInt(dice.replace('d', ''), 10);
   const rules = [];
 
   // iterate on all numbers
   let i = 1;
   while (i <= n) {
-    let j = 1;
-
     // do n^2 rules
-    while (j <= n) {
-      // 1=3
-      // 3=3
-      rules.push({
-        type: 'very rare',
-        rule: `${i}=${j}`,
-      });
+    if (doNsqd) {
+      let j = 1;
+      while (j <= n) {
+        // 1=3
+        // 3=3
+        rules.push({
+          type: 'very rare',
+          rule: `${i}=${j}`,
+        });
 
-      j += 1;
+        j += 1;
+      }
     }
 
     // >=3
@@ -74,7 +75,7 @@ const generateAllRules = (race = 'Dragonborn') => {
     if (dice === 'sex') {
       chromosomes[c] = {
         x: generateRules(Xdice),
-        Y: generateRules(Ydice),
+        Y: generateRules(Ydice, false), // there can't be a pair of two y's so don't do squared rules
       };
     }
   });
@@ -85,6 +86,6 @@ const generateAllRules = (race = 'Dragonborn') => {
 // generate rules for all races
 defaults.races.forEach((race) => {
   const raceName = race.toLowerCase().replace(' ', '-');
-  process.stdout.write(`Saving ${race} rules...`);
+  process.stdout.write(`Saving ${race} rules...\n`);
   fs.writeFileSync(path.join(dataDir, `rules-${raceName}.json`), JSON.stringify(generateAllRules(race)));
 });

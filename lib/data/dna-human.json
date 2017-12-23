@@ -27,5 +27,30 @@
   "sex": {
     "x": "d8",
     "y": "d4"
+  },
+  "legend": {
+    "1": "general",
+    "2": "eye-color",
+    "3": "hair-general",
+    "4": "hair-color",
+    "5": "skin-general",
+    "6": "skin-color",
+    "7": "eye-shape",
+    "8": "face-shape",
+    "9": "face-nose",
+    "10": "hair-facial",
+    "11": "face-mouth",
+    "12": "eye-brows",
+    "13": "skin-aging",
+    "14": "unknown",
+    "15": "unknown",
+    "16": "unknown",
+    "17": "unknown",
+    "18": "unknown",
+    "19": "unknown",
+    "20": "unknown",
+    "21": "unknown",
+    "22": "unknown",
+    "23": "sex"
   }
 }

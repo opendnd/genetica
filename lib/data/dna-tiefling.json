@@ -1,14 +1,42 @@
 {
   "chromosomes": {
     "1": "d100",
-    "2": "d8",
-    "3": "d6",
-    "4": "d6",
-    "5": "d6",
-    "6": "sex"
+    "2": "d20",
+    "3": "d20",
+    "4": "d20",
+    "5": "d12",
+    "6": "d8",
+    "7": "d8",
+    "8": "d8",
+    "9": "d8",
+    "10": "d8",
+    "11": "d8",
+    "12": "d8",
+    "13": "d6",
+    "14": "d6",
+    "15": "d6",
+    "16": "sex"
   },
   "sex": {
     "x": "d4",
     "y": "d4"
+  },
+  "legend": {
+    "1": "unknown",
+    "2": "general",
+    "3": "eye-color",
+    "4": "hair-general",
+    "5": "hair-color",
+    "6": "skin-general",
+    "7": "skin-color",
+    "8": "eye-shape",
+    "9": "face-shape",
+    "10": "face-nose",
+    "11": "hair-facial",
+    "12": "face-mouth",
+    "13": "eye-brows",
+    "14": "skin-aging",
+    "15": "unknown",
+    "16": "sex"
   }
 }

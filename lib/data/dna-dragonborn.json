@@ -5,14 +5,42 @@
     "3": "d20",
     "4": "d20",
     "5": "d20",
-    "6": "d8",
-    "7": "d8",
-    "8": "d8",
-    "9": "d8",
-    "10": "sex"
+    "6": "d12",
+    "7": "d12",
+    "8": "d12",
+    "9": "d12",
+    "10": "d8",
+    "11": "d8",
+    "12": "d8",
+    "13": "d8",
+    "14": "d8",
+    "15": "d6",
+    "16": "d6",
+    "17": "d6",
+    "18": "sex"
   },
   "sex": {
     "x": "d10",
     "y": "d8"
+  },
+  "legend": {
+    "1": "general",
+    "2": "eye-color",
+    "3": "hair-general",
+    "4": "hair-color",
+    "5": "skin-general",
+    "6": "skin-color",
+    "7": "eye-shape",
+    "8": "face-shape",
+    "9": "face-nose",
+    "10": "hair-facial",
+    "11": "face-mouth",
+    "12": "eye-brows",
+    "13": "skin-aging",
+    "14": "unknown",
+    "15": "unknown",
+    "16": "unknown",
+    "17": "unknown",
+    "18": "sex"
   }
 }

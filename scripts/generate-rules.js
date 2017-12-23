@@ -6,7 +6,7 @@ const dataDir = path.join(libDir, 'data');
 const defaults = require(path.join(libDir, 'defaults'));
 
 // generate all possible rules for a dice
-const generateRules = (dice, doNsqd = true) => {
+const generateRules = (dice, doNsqd = true, prepend = '') => {
   const n = parseInt(dice.replace('d', ''), 10);
   const rules = [];
 
@@ -21,7 +21,7 @@ const generateRules = (dice, doNsqd = true) => {
         // 3=3
         rules.push({
           type: 'very rare',
-          rule: `${i}=${j}`,
+          rule: `${prepend + i}=${prepend + j}`,
         });
 
         j += 1;
@@ -31,25 +31,25 @@ const generateRules = (dice, doNsqd = true) => {
     // >=3
     rules.push({
       type: 'rare',
-      rule: `>=${i}`,
+      rule: `>=${prepend + i}`,
     });
 
     // <=3
     rules.push({
       type: 'rare',
-      rule: `<=${i}`,
+      rule: `<=${prepend + i}`,
     });
 
     // ==3
     rules.push({
       type: 'common',
-      rule: `==${i}`,
+      rule: `==${prepend + i}`,
     });
 
     // !=3
     rules.push({
       type: 'very common',
-      rule: `!=${i}`,
+      rule: `!=${prepend + i}`,
     });
 
     i += 1;
@@ -74,8 +74,8 @@ const generateAllRules = (race = 'Dragonborn') => {
 
     if (dice === 'sex') {
       chromosomes[c] = {
-        x: generateRules(Xdice),
-        Y: generateRules(Ydice, false), // there can't be a pair of two y's so don't do squared rules
+        x: generateRules(Xdice, true, 'X'),
+        y: generateRules(Ydice, false, 'Y'), // there can't be a pair of two y's so don't do squared rules
       };
     }
   });

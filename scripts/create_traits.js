@@ -11,7 +11,7 @@ const defaults = require(path.join(libDir, 'defaults'));
 const searchWorksheets = ['general', 'eye-color', 'hair-general', 'hair-color', 'skin-general', 'skin-color', 'eye-shape', 'face-shape', 'face-nose', 'hair-facial', 'face-mouth', 'eye-brows', 'skin-aging', 'sex'];
 
 // Parse a file
-const race = 'Dragonborn';
+const race = process.argv[2] || 'Dragonborn';
 const worksheets = xlsx.parse(path.join(scriptsDir, `${race}.xlsx`));
 
 // generate genes
@@ -55,18 +55,28 @@ worksheets.forEach((ws) => {
 
       let gene = `C${chromosome}:`;
 
-      // prepend the sex
-      if (ws.name === 'sex-female') gene += 'XX:';
-      if (ws.name === 'sex-male') gene += 'Y:';
-
       // rare
       if (dominance < 1) {
         const randomRoll = rolls.sample(); // get a random roll
-        gene += randomRoll;
+
+        // handle rare differently for female
+        if (ws.name === 'sex-female') {
+          let femaleRollParts = randomRoll.split('=');
+          const femaleRandomRoll = `X${femaleRollParts[0]}=X${femaleRollParts[1]}`;
+
+          gene += femaleRandomRoll;
+        } else {
+          gene += randomRoll;
+        }
+
         rolls.splice(rolls.indexOf(randomRoll), 1); // remove from rolls
 
       // common
       } else {
+        // prepend the sex
+        if (ws.name === 'sex-female') gene += 'XX';
+        if (ws.name === 'sex-male') gene += 'Y';
+
         gene += dominance;
       }
 

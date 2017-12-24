@@ -14,6 +14,9 @@ const searchWorksheets = ['general', 'eye-color', 'hair-general', 'hair-color', 
 const race = 'Dragonborn';
 const worksheets = xlsx.parse(path.join(scriptsDir, `${race}.xlsx`));
 
+// generate genes
+let genes = {};
+
 worksheets.forEach((ws) => {
   let legendName = ws.name;
   if ((legendName === 'sex-male') || (legendName === 'sex-female')) legendName = 'sex';
@@ -47,8 +50,32 @@ worksheets.forEach((ws) => {
       const type = row[2];
 
       if (trait === undefined) return;
+      if (dominance === undefined) return;
+      if (type === undefined) return;
+
+      let gene = `C${chromosome}:`;
+
+      // prepend the sex
+      if (ws.name === 'sex-female') gene += 'XX:';
+      if (ws.name === 'sex-male') gene += 'Y:';
+
+      // rare
+      if (dominance < 1) {
+        const randomRoll = rolls.sample(); // get a random roll
+        gene += randomRoll;
+        rolls.splice(rolls.indexOf(randomRoll), 1); // remove from rolls
+
+      // common
+      } else {
+        gene += dominance;
+      }
+
+      // common
+      genes[gene] = trait;
     });
   } else {
     throw new Error('Unknown worksheet found!');
   }
 });
+
+console.log(JSON.stringify(genes));

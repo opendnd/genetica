@@ -65,6 +65,17 @@ worksheets.forEach((ws) => {
 
     if (dice === undefined) throw new Error('Dice not defined!');
 
+    // check dice
+    if (legendName !== 'sex') {
+      if (parseInt(dice, 10) !== parseInt(DNA.chromosomes[chromosome].replace('d', ''), 10)) throw new Error('Dice is not defined to the correct amount!');
+    }
+    if (ws.name === 'sex-male') {
+      if (parseInt(dice, 10) !== parseInt(Ydice)) throw new Error('Dice is not defined properly for sex-male!');
+    }
+    if (ws.name === 'sex-female') {
+      if (parseInt(dice, 10) !== parseInt(Xdice)) throw new Error('Dice is not defined properly for sex-female!');
+    }
+
     // generate rolls
     let femaleRolls = generatePossibleRolls(Xdice, Xdice, 'female');
     let maleRolls = generatePossibleRolls(Xdice, Ydice, 'male');

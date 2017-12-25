@@ -56,18 +56,18 @@ worksheets.forEach((ws) => {
   if ((legendName === 'sex-male') || (legendName === 'sex-female')) legendName = 'sex';
 
   if (searchWorksheets.includes(legendName)) {
-    const data = ws.data.slice(5, ws.data.length);
-    const dice = ws.data[1][1];
-
     const DNA = defaults.DNA[race];
     const chromosomeIndex = Object.values(DNA.legend).indexOf(legendName);
     const chromosome = Object.keys(DNA.legend)[chromosomeIndex];
+    const data = ws.data.slice(5, ws.data.length);
+    const dice = ws.data[1][1];
+    const templateDice = DNA.chromosomes[chromosome].replace('d', '');
 
     if (dice === undefined) throw new Error('Dice not defined!');
 
     // check dice
     if (legendName !== 'sex') {
-      if (parseInt(dice, 10) !== parseInt(DNA.chromosomes[chromosome].replace('d', ''), 10)) throw new Error(`Dice is not defined to the correct amount for ${ws.name}!`);
+      if (parseInt(dice, 10) !== parseInt(templateDice, 10)) throw new Error(`Dice is not defined to the correct amount for ${ws.name} it should be ${templateDice}!`);
     }
     if (ws.name === 'sex-male') {
       if (parseInt(dice, 10) !== parseInt(Ydice)) throw new Error('Dice is not defined properly for sex-male!');

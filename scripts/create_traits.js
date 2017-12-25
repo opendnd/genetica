@@ -12,11 +12,45 @@ const searchWorksheets = ['general', 'eye-color', 'hair-general', 'hair-color', 
 
 // Parse a file
 const race = process.argv[2] || 'Dragonborn';
+const template = defaults.DNA[race];
+const Xdice = template.sex.x.replace('d', '');
+const Ydice = template.sex.y.replace('d', '');
 const worksheets = xlsx.parse(path.join(scriptsDir, `${race}.xlsx`));
 
 // generate genes
 let genes = {};
 
+// generate all possible rolls for some dice
+const generatePossibleRolls = (diceA, diceB, gender) => {
+  diceA = parseInt(diceA, 10);
+  diceB = parseInt(diceB, 10);
+  let rolls = [];
+
+  // do dice A
+  let a = 1;
+  while (a <= diceA) {
+
+    // do dice B
+    let b = 1;
+    while (b <= diceB) {
+      if (gender === 'female') {
+        rolls.push(`X${a}=X${b}`);
+      } else if (gender === 'male') {
+        rolls.push(`X${a}=Y${b}`);
+      } else {
+        rolls.push(`${a}=${b}`);
+      }
+
+      b += 1;
+    }
+
+    a += 1;
+  }
+
+  return rolls;
+}
+
+// go through each worksheet
 worksheets.forEach((ws) => {
   let legendName = ws.name;
   if ((legendName === 'sex-male') || (legendName === 'sex-female')) legendName = 'sex';
@@ -31,17 +65,10 @@ worksheets.forEach((ws) => {
 
     if (dice === undefined) throw new Error('Dice not defined!');
 
-    let rolls = [];
-    // generate all possible dice rolls
-    let i = 1;
-    while (i <= dice) {
-      let j = 1;
-      while (j <= dice) {
-        rolls.push(`${i}=${j}`);
-        j += 1;
-      }
-      i += 1;
-    }
+    // generate rolls
+    let femaleRolls = generatePossibleRolls(Xdice, Xdice, 'female');
+    let maleRolls = generatePossibleRolls(Xdice, Ydice, 'male');
+    let rolls = generatePossibleRolls(dice, dice);
 
     // iterate on the data
     data.forEach((row) => {
@@ -57,20 +84,20 @@ worksheets.forEach((ws) => {
 
       // rare
       if (dominance < 1) {
-        const randomRoll = rolls.sample(); // get a random roll
-
-        // handle rare differently for female
+        // handle rare differently for female, male and standard
         if (ws.name === 'sex-female') {
-          let femaleRollParts = randomRoll.split('=');
-          const femaleRandomRoll = `X${femaleRollParts[0]}=X${femaleRollParts[1]}`;
-
-          gene += femaleRandomRoll;
-        } else {
+          const randomRoll = femaleRolls.sample();
           gene += randomRoll;
+          femaleRolls.splice(rolls.indexOf(randomRoll), 1); // remove from rolls
+        } else if (ws.name === 'sex-male') {
+          const randomRoll = maleRolls.sample();
+          gene += randomRoll;
+          maleRolls.splice(rolls.indexOf(randomRoll), 1); // remove from rolls
+        } else {
+          const randomRoll = rolls.sample();
+          gene += randomRoll;
+          rolls.splice(rolls.indexOf(randomRoll), 1); // remove from rolls
         }
-
-        rolls.splice(rolls.indexOf(randomRoll), 1); // remove from rolls
-
       // common
       } else {
         // prepend the sex

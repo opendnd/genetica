@@ -5,7 +5,7 @@ const path = require('path');
 const rootDir = path.join(__dirname, '..', '..');
 const libDir = path.join(rootDir, 'lib');
 const Genetica = require(path.join(libDir, 'genetica'));
-let genetica, genes;
+let genetica;
 
 describe('Genetica', () => {
   before(() => {
@@ -13,9 +13,9 @@ describe('Genetica', () => {
   });
 
   it('can generate', () => {
-    genes = genetica.generate();
+    DNA = genetica.generate();
 
-    expect(genes).to.be.an('object');
+    expect(DNA).to.be.an('object');
   });
 
   context('validates opts', () => {
@@ -79,5 +79,33 @@ describe('Genetica', () => {
         expect(err.message).to.eq('Sex chromosome value higher than possible dice roll!');
       }
     });
+  });
+
+  it('can generate a child', () => {
+    genetica.resetOpts();
+    const motherDNA = genetica.generate({
+      gender: 'female',
+      race: 'Dragonborn',
+    });
+    const fatherDNA = genetica.generate({
+      gender: 'male',
+      race: 'Dragonborn',
+    });
+
+    const DNA = genetica.generateChild({}, motherDNA, fatherDNA);
+
+    expect(motherDNA).to.be.an('object');
+    expect(fatherDNA).to.be.an('object');
+    expect(DNA).to.be.an('object');
+  });
+
+  it('can generate parents', () => {
+    genetica.resetOpts();
+    const DNA = genetica.generate()
+    const { motherDNA, fatherDNA } = genetica.generateParents(DNA);
+
+    expect(DNA).to.be.an('object');
+    expect(motherDNA).to.be.an('object');
+    expect(fatherDNA).to.be.an('object');
   });
 });

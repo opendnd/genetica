@@ -67,7 +67,7 @@ worksheets.forEach((ws) => {
 
     // check dice
     if (legendName !== 'sex') {
-      if (parseInt(dice, 10) !== parseInt(DNA.chromosomes[chromosome].replace('d', ''), 10)) throw new Error('Dice is not defined to the correct amount!');
+      if (parseInt(dice, 10) !== parseInt(DNA.chromosomes[chromosome].replace('d', ''), 10)) throw new Error(`Dice is not defined to the correct amount for ${ws.name}!`);
     }
     if (ws.name === 'sex-male') {
       if (parseInt(dice, 10) !== parseInt(Ydice)) throw new Error('Dice is not defined properly for sex-male!');

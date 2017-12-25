@@ -70,10 +70,10 @@ worksheets.forEach((ws) => {
       if (parseInt(dice, 10) !== parseInt(templateDice, 10)) throw new Error(`Dice is not defined to the correct amount for ${ws.name} it should be ${templateDice}!`);
     }
     if (ws.name === 'sex-male') {
-      if (parseInt(dice, 10) !== parseInt(Ydice)) throw new Error('Dice is not defined properly for sex-male!');
+      if (parseInt(dice, 10) !== parseInt(Ydice)) throw new Error(`Dice is not defined properly for sex-male it should be ${Ydice}!`);
     }
     if (ws.name === 'sex-female') {
-      if (parseInt(dice, 10) !== parseInt(Xdice)) throw new Error('Dice is not defined properly for sex-female!');
+      if (parseInt(dice, 10) !== parseInt(Xdice)) throw new Error(`Dice is not defined properly for sex-female it should be ${Xdice}!`);
     }
 
     // generate rolls

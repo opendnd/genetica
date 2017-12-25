@@ -53,3 +53,11 @@ jspm_packages
 
 # ignore template files in excel
 ~$Dragonborn.xlsx
+~$Dwarf.xlsx
+~$Elf.xlsx
+~$Gnome.xlsx
+~$Half-Elf.xlsx
+~$Half-Orc.xlsx
+~$Halfling.xlsx
+~$Human.xlsx
+~$Tiefling.xlsx

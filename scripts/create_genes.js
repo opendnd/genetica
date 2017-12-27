@@ -33,6 +33,8 @@ const generatePossibleRolls = (diceA, diceB, gender) => {
     // do dice B
     let b = 1;
     while (b <= diceB) {
+      if ((a === 1) && (b === 1)) break; // skip 1=1 as it makes 1 dominant impossible
+
       if (gender === 'female') {
         rolls.push(`X${a}=X${b}`);
       } else if (gender === 'male') {

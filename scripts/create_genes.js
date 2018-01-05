@@ -59,8 +59,7 @@ worksheets.forEach((ws) => {
 
   if (searchWorksheets.includes(legendName)) {
     const DNA = defaults.DNA[race];
-    const chromosomeIndex = Object.values(DNA.legend).indexOf(legendName);
-    const chromosome = Object.keys(DNA.legend)[chromosomeIndex];
+    const chromosome = DNA.legend[legendName];
     const data = ws.data.slice(5, ws.data.length);
     const dice = ws.data[1][1];
     const templateDice = DNA.chromosomes[chromosome].replace('d', '');
@@ -121,7 +120,7 @@ worksheets.forEach((ws) => {
       }
 
       // common
-      genes[gene] = trait;
+      genes[`${legendName}:${gene}`] = trait;
     });
   } else {
     throw new Error('Unknown worksheet found!');

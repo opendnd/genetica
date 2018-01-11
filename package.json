@@ -1,6 +1,6 @@
 {
   "name": "genetica",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "This is a tool for using a simplified genetics system to generate inheritable traits for DnD characters.",
   "main": "lib/genetica.js",
   "scripts": {

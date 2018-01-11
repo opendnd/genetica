@@ -82,7 +82,6 @@ describe('Genetica', () => {
   });
 
   it('can generate a child', () => {
-    genetica.resetOpts();
     const motherDNA = genetica.generate({
       gender: 'female',
       race: 'Dragonborn',
@@ -100,12 +99,48 @@ describe('Genetica', () => {
   });
 
   it('can generate parents', () => {
-    genetica.resetOpts();
     const DNA = genetica.generate()
     const { motherDNA, fatherDNA } = genetica.generateParents(DNA);
 
     expect(DNA).to.be.an('object');
     expect(motherDNA).to.be.an('object');
     expect(fatherDNA).to.be.an('object');
+  });
+
+  it('getDefaults returns defaults with genders and races', () => {
+    expect(Genetica.getDefaults().genders).to.be.an('array');
+    expect(Genetica.getDefaults().races).to.be.an('array');
+  });
+
+  // generate by race
+  context('races', () => {
+    const testRace = (race) => {
+      it(`generates for ${race}`, () => {
+        const motherDNA = genetica.generate({
+          gender: 'female',
+          race,
+        });
+        const fatherDNA = genetica.generate({
+          gender: 'male',
+          race,
+        });
+
+        const DNA = genetica.generateChild({}, motherDNA, fatherDNA);
+
+        expect(motherDNA).to.be.an('object');
+        expect(fatherDNA).to.be.an('object');
+        expect(DNA).to.be.an('object');
+      });
+    };
+
+    testRace('Dragonborn');
+    testRace('Dwarf');
+    testRace('Elf');
+    testRace('Gnome');
+    testRace('Half-Elf');
+    testRace('Half-Orc');
+    testRace('Halfling');
+    testRace('Human');
+    testRace('Tiefling');
   });
 });

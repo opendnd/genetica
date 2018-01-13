@@ -33,7 +33,7 @@ describe('Genetica', () => {
           'chromosome-1': '1',
         });
       } catch (err) {
-        expect(err.message).to.eq('Malformatted chromosome input!');
+        expect(err.message).to.include('Malformatted chromosome input');
       }
     });
 
@@ -43,7 +43,7 @@ describe('Genetica', () => {
           'chromosome-1': '100000=1',
         });
       } catch (err) {
-        expect(err.message).to.eq('Chromosome value higher than possible dice roll!');
+        expect(err.message).to.include('Chromosome value');
       }
     });
 
@@ -54,7 +54,7 @@ describe('Genetica', () => {
           'chromosome-sex': 'X1=Y1',
         });
       } catch (err) {
-        expect(err.message).to.eq('Malformatted female sex chromosome input!');
+        expect(err.message).to.include('Malformatted female sex chromosome');
       }
     });
 
@@ -65,7 +65,7 @@ describe('Genetica', () => {
           'chromosome-sex': 'Y1=Y1',
         });
       } catch (err) {
-        expect(err.message).to.eq('Malformatted male sex chromosome input!');
+        expect(err.message).to.include('Malformatted male sex chromosome');
       }
     });
 
@@ -76,7 +76,7 @@ describe('Genetica', () => {
           'chromosome-sex': 'X100000=Y1',
         });
       } catch (err) {
-        expect(err.message).to.eq('Sex chromosome value higher than possible dice roll!');
+        expect(err.message).to.include('Sex chromosome value');
       }
     });
   });
@@ -116,20 +116,30 @@ describe('Genetica', () => {
   context('races', () => {
     const testRace = (race) => {
       it(`generates for ${race}`, () => {
+        genetica.resetOpts();
         const motherDNA = genetica.generate({
           gender: 'female',
           race,
         });
+        genetica.resetOpts();
         const fatherDNA = genetica.generate({
           gender: 'male',
           race,
         });
 
+        genetica.resetOpts();
         const DNA = genetica.generateChild({}, motherDNA, fatherDNA);
+        const grandparentsDNA = genetica.generateParents(motherDNA);
 
         expect(motherDNA).to.be.an('object');
+        expect(motherDNA.uuid).to.be.a('string');
         expect(fatherDNA).to.be.an('object');
+        expect(fatherDNA.uuid).to.be.a('string');
         expect(DNA).to.be.an('object');
+        expect(DNA.uuid).to.be.a('string');
+        expect(grandparentsDNA).to.be.an('object');
+        expect(grandparentsDNA.motherDNA.uuid).to.be.a('string');
+        expect(grandparentsDNA.fatherDNA.uuid).to.be.a('string');
       });
     };
 

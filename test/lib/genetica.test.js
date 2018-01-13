@@ -18,6 +18,25 @@ describe('Genetica', () => {
     expect(DNA).to.be.an('object');
   });
 
+  it('inherits opts properly', () => {
+    genetica = new Genetica({
+      race: 'Dragonborn',
+      gender: 'female',
+    });
+
+    let DNA = genetica.generate();
+
+    expect(DNA.gender).to.eq('female');
+    expect(DNA.race).to.eq('Dragonborn');
+
+    DNA = genetica.generate({
+      race: 'Dwarf',
+      gender: 'male',
+    });
+    expect(DNA.gender).to.eq('male');
+    expect(DNA.race).to.eq('Dwarf');
+  });
+
   context('validates opts', () => {
     it('checks for race and gender', () => {
       const result = genetica.validateOpts({});

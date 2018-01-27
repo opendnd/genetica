@@ -50,6 +50,7 @@ jspm_packages
 
 # ignore dna files
 *.dna
+*.seed.dna
 
 # ignore template files in excel
 ~$Dragonborn.xlsx

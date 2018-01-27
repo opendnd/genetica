@@ -18,6 +18,22 @@ genetica
 
 Follow the prompts for Race and Gender (optional) and your DNA is outputted with information on traits.
 
+## Module Usage
+Require genetica into your file and create a new Genetica class. 
+
+```javascript
+const Genetica = require('genetica');
+
+const genetica = new Genetica();
+
+const opts = {
+  gender: 'female',
+  race: 'Dragonborn'
+};
+
+const DNA = genetica.generate(opts);
+```
+
 ## Simplified DNA System
 Each generated character has a set of DNA with chromosomes. These chromosomes go to applying traits.
 

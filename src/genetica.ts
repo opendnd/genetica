@@ -1,4 +1,4 @@
-import { DNA } from 'opendnd-core';
+import { DNA, LinkRace, Genders } from 'opendnd-core';
 import * as path from 'path';
 import * as uuidv1 from 'uuid/v1';
 
@@ -401,7 +401,7 @@ class Genetica {
 
   // generate a child
   generateChild(opts = {}, motherDNA:DNA = {} as DNA, fatherDNA:DNA = {} as DNA) {
-    this.opts.race = motherDNA.race;
+    this.opts.race = motherDNA.race.uuid;
     this.validateOpts(Object.assign(this.opts, opts));
     const { race, gender } = this.opts;
     const chromosomes = this.mapChromosomesToOpts(this.generateChildChromosomes(motherDNA.chromosomes, fatherDNA.chromosomes));
@@ -415,11 +415,11 @@ class Genetica {
   }
 
   // generate parents
-  generateParents(DNA) {
+  generateParents(DNA: DNA) {
     const { race, gender, chromosomes } = DNA;
     this.opts = {
-      race,
-      gender,
+      race: race.uuid,
+      gender: Genders[gender],
     };
 
     // generate mother and father chromosomes
@@ -445,8 +445,8 @@ class Genetica {
     };
   }
 
-  // generate a person
-  generate(opts = {}) {
+  // generate a person's DNA
+  generate(opts = {}): DNA {
     const { version } = pinfo;
     const genOpts = this.validateOpts(Object.assign(this.opts, opts));
     const { race, gender } = genOpts;
@@ -456,14 +456,26 @@ class Genetica {
 
     this.resetOpts();
 
-    return {
+    const result:DNA = {
       version,
       uuid,
-      race,
-      gender,
+      race: {
+        uuid: race,
+      },
+      gender: defaults.genderMapping[gender],
       chromosomes,
       traits,
+      // TODO: add new fields
+      size: null,
+      weight: 0,
+      height: 0,
+      abstract: false,
+      abstractProperties: {},
+      derivation: null,
+      notes: '',
     };
+
+    return result;
   }
 }
 

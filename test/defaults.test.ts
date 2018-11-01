@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as path from 'path';
 import defaults from '../src/defaults';
 
 describe('defaults', () => {

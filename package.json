@@ -4,7 +4,7 @@
   "description": "This is a tool for using a simplified genetics system to generate inheritable traits for DnD characters.",
   "main": "dist/genetica.js",
   "scripts": {
-    "start": "yarn run env:dev && nodemon --exec ts-node src/index.ts",
+    "start": "bin/genetica",
     "prebuild": "rimraf dist",
     "build": "tsc",
     "lint": "tslint src/**/*.ts",
@@ -36,7 +36,7 @@
     "colors": "^1.3.0",
     "commander": "^2.16.0",
     "node-zip": "^1.1.1",
-    "opendnd-core": "0.0.2",
+    "opendnd-core": "0.0.5",
     "questions": "0.0.6",
     "roll": "^1.2.0",
     "uuid": "^3.3.2"

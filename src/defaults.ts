@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import defaultsDefault from './defaults-default';
+import { Genders } from 'opendnd-core';
 
 const home = process.env.HOME || process.env.USERPROFILE;
 const userPath = path.join(home, '.dnd', 'genetica', 'defaults.js');
@@ -36,5 +37,11 @@ Array.prototype.sample = function () {
 }
 
 defaults.races = Object.keys(defaults.DNA);
+
+// TODO: update this codebase to use the genders types instead of this mapping
+defaults.genderMapping = {
+  'male': Genders.Male,
+  'female': Genders.Female,
+}
 
 export default defaults;

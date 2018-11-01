@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import * as path from 'path';
-import { TplDNA } from 'opendnd-core';
+import { DNA, Genders } from 'opendnd-core';
 import Genetica from '../src/genetica';
 
 let genetica;
@@ -11,9 +10,9 @@ describe('Genetica', () => {
   });
 
   it('can generate', () => {
-    let DNA:TplDNA = genetica.generate();
+    let result:DNA = genetica.generate();
 
-    expect(DNA).to.be.an('object');
+    expect(result).to.be.an('object');
   });
 
   it('inherits opts properly', () => {
@@ -22,17 +21,17 @@ describe('Genetica', () => {
       gender: 'female',
     });
 
-    let DNA:TplDNA = genetica.generate();
+    let result:DNA = genetica.generate();
 
-    expect(DNA.gender).to.eq('female');
-    expect(DNA.race).to.eq('Dragonborn');
+    expect(result.gender).to.eq(Genders.Female);
+    expect(result.race.uuid).to.eq('Dragonborn');
 
-    DNA = genetica.generate({
+    result = genetica.generate({
       race: 'Dwarf',
       gender: 'male',
     });
-    expect(DNA.gender).to.eq('male');
-    expect(DNA.race).to.eq('Dwarf');
+    expect(result.gender).to.eq(Genders.Male);
+    expect(result.race.uuid).to.eq('Dwarf');
   });
 
   context('validates opts', () => {
@@ -99,27 +98,27 @@ describe('Genetica', () => {
   });
 
   it('can generate a child', () => {
-    const motherDNA:TplDNA = genetica.generate({
+    const motherDNA:DNA = genetica.generate({
       gender: 'female',
       race: 'Dragonborn',
     });
-    const fatherDNA:TplDNA = genetica.generate({
+    const fatherDNA:DNA = genetica.generate({
       gender: 'male',
       race: 'Dragonborn',
     });
 
-    const DNA:TplDNA = genetica.generateChild({}, motherDNA, fatherDNA);
+    const result:DNA = genetica.generateChild({}, motherDNA, fatherDNA);
 
     expect(motherDNA).to.be.an('object');
     expect(fatherDNA).to.be.an('object');
-    expect(DNA).to.be.an('object');
+    expect(result).to.be.an('object');
   });
 
   it('can generate parents', () => {
-    const DNA:TplDNA = genetica.generate()
-    const { motherDNA, fatherDNA } = genetica.generateParents(DNA);
+    const result:DNA = genetica.generate()
+    const { motherDNA, fatherDNA } = genetica.generateParents(result);
 
-    expect(DNA).to.be.an('object');
+    expect(result).to.be.an('object');
     expect(motherDNA).to.be.an('object');
     expect(fatherDNA).to.be.an('object');
   });
@@ -134,26 +133,26 @@ describe('Genetica', () => {
     const testRace = (race) => {
       it(`generates for ${race}`, () => {
         genetica.resetOpts();
-        const motherDNA:TplDNA = genetica.generate({
+        const motherDNA:DNA = genetica.generate({
           gender: 'female',
           race,
         });
         genetica.resetOpts();
-        const fatherDNA:TplDNA = genetica.generate({
+        const fatherDNA:DNA = genetica.generate({
           gender: 'male',
           race,
         });
 
         genetica.resetOpts();
-        const DNA:TplDNA = genetica.generateChild({}, motherDNA, fatherDNA);
-        const grandparentsDNA:TplDNA = genetica.generateParents(motherDNA);
+        const result:DNA = genetica.generateChild({}, motherDNA, fatherDNA);
+        const grandparentsDNA:any = genetica.generateParents(motherDNA);
 
         expect(motherDNA).to.be.an('object');
         expect(motherDNA.uuid).to.be.a('string');
         expect(fatherDNA).to.be.an('object');
         expect(fatherDNA.uuid).to.be.a('string');
-        expect(DNA).to.be.an('object');
-        expect(DNA.uuid).to.be.a('string');
+        expect(result).to.be.an('object');
+        expect(result.uuid).to.be.a('string');
         expect(grandparentsDNA).to.be.an('object');
         expect(grandparentsDNA.motherDNA.uuid).to.be.a('string');
         expect(grandparentsDNA.fatherDNA.uuid).to.be.a('string');

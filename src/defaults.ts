@@ -1,11 +1,27 @@
 /* eslint-disable */
-const fs = require('fs');
-const path = require('path');
-const rootDir = path.join(__dirname, '..');
-const libDir = path.join(rootDir, 'lib');
+import * as fs from 'fs';
+import * as path from 'path';
+
+import defaultsDefault from './defaults-default';
+
 const home = process.env.HOME || process.env.USERPROFILE;
 const userPath = path.join(home, '.dnd', 'genetica', 'defaults.js');
 let defaults;
+
+// get from the user path
+if (fs.existsSync(userPath)) {
+  defaults = require(userPath);
+} else {
+  defaults = defaultsDefault;
+}
+
+declare global {
+  interface Array<T> {
+    pushUnique(element: T): void;
+    sample(): T;
+  }
+}
+
 
 // only push unique elements
 Array.prototype.pushUnique = function(element) { 
@@ -17,15 +33,8 @@ Array.prototype.pushUnique = function(element) {
 // grab a random element
 Array.prototype.sample = function () {
   return this[Math.floor(Math.random() * this.length)]
-};
-
-// get from the user path
-if (fs.existsSync(userPath)) {
-  defaults = require(userPath);
-} else {
-  defaults = require(path.join(libDir, 'defaults-default'));
 }
 
 defaults.races = Object.keys(defaults.DNA);
 
-module.exports = defaults;
+export default defaults;

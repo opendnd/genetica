@@ -1,8 +1,8 @@
-const expect = require('chai').expect;
-const path = require('path');
-const rootDir = path.join(__dirname, '..', '..');
-const libDir = path.join(rootDir, 'lib');
-const Genetica = require(path.join(libDir, 'genetica'));
+import { expect } from 'chai';
+import * as path from 'path';
+import { TplDNA } from 'opendnd-core';
+import Genetica from '../src/genetica';
+
 let genetica;
 
 describe('Genetica', () => {
@@ -11,7 +11,7 @@ describe('Genetica', () => {
   });
 
   it('can generate', () => {
-    DNA = genetica.generate();
+    let DNA:TplDNA = genetica.generate();
 
     expect(DNA).to.be.an('object');
   });
@@ -22,7 +22,7 @@ describe('Genetica', () => {
       gender: 'female',
     });
 
-    let DNA = genetica.generate();
+    let DNA:TplDNA = genetica.generate();
 
     expect(DNA.gender).to.eq('female');
     expect(DNA.race).to.eq('Dragonborn');
@@ -99,16 +99,16 @@ describe('Genetica', () => {
   });
 
   it('can generate a child', () => {
-    const motherDNA = genetica.generate({
+    const motherDNA:TplDNA = genetica.generate({
       gender: 'female',
       race: 'Dragonborn',
     });
-    const fatherDNA = genetica.generate({
+    const fatherDNA:TplDNA = genetica.generate({
       gender: 'male',
       race: 'Dragonborn',
     });
 
-    const DNA = genetica.generateChild({}, motherDNA, fatherDNA);
+    const DNA:TplDNA = genetica.generateChild({}, motherDNA, fatherDNA);
 
     expect(motherDNA).to.be.an('object');
     expect(fatherDNA).to.be.an('object');
@@ -116,7 +116,7 @@ describe('Genetica', () => {
   });
 
   it('can generate parents', () => {
-    const DNA = genetica.generate()
+    const DNA:TplDNA = genetica.generate()
     const { motherDNA, fatherDNA } = genetica.generateParents(DNA);
 
     expect(DNA).to.be.an('object');
@@ -134,19 +134,19 @@ describe('Genetica', () => {
     const testRace = (race) => {
       it(`generates for ${race}`, () => {
         genetica.resetOpts();
-        const motherDNA = genetica.generate({
+        const motherDNA:TplDNA = genetica.generate({
           gender: 'female',
           race,
         });
         genetica.resetOpts();
-        const fatherDNA = genetica.generate({
+        const fatherDNA:TplDNA = genetica.generate({
           gender: 'male',
           race,
         });
 
         genetica.resetOpts();
-        const DNA = genetica.generateChild({}, motherDNA, fatherDNA);
-        const grandparentsDNA = genetica.generateParents(motherDNA);
+        const DNA:TplDNA = genetica.generateChild({}, motherDNA, fatherDNA);
+        const grandparentsDNA:TplDNA = genetica.generateParents(motherDNA);
 
         expect(motherDNA).to.be.an('object');
         expect(motherDNA.uuid).to.be.a('string');

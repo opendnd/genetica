@@ -1,13 +1,11 @@
-const program = require('commander');
-const path = require('path');
-const rootDir = path.join(__dirname, '..');
-const libDir = path.join(rootDir, 'lib');
-const Genetica = require(path.join(libDir, 'Genetica'));
-const Renderer = require(path.join(libDir, 'renderer'));
-const Saver = require(path.join(libDir, 'saver'));
-const SaverSeed = require(path.join(libDir, 'saver-seed'));
-const wizard = require(path.join(libDir, 'wizard'));
-const wizardManual = require(path.join(libDir, 'wizard-manual'));
+import * as program from 'commander';
+
+import Renderer from './renderer';
+import Saver from './saver';
+import SaverSeed from './saver';
+import Genetica from './genetica';
+import wizard from './wizard';
+import wizardManual from './wizard-manual';
 
 // program basics
 program
@@ -30,7 +28,7 @@ if (program.input) {
   const DNA = genetica.generate();
 
   Renderer.output(DNA);
-  Saver.finish(outputDir, 'Would you like to save your genes? (y | n)', DNA, DNA.uuid);
+  Saver.finish(outputDir, 'Would you like to save your genes? (y | n)', DNA, DNA.uuid, undefined);
 
 // force a manual roll instead of random
 } else if (program.force) {

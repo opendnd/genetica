@@ -1,14 +1,17 @@
-const fs = require('fs');
+import * as fs from 'fs';
+import * as path from 'path';
+
+import defaults from './defaults';
+import SaverSeed from './saver';
+
 const questions = require('questions');
-const Roll = require('roll');
-const roll = new Roll();
 const colors = require('colors/safe');
-const path = require('path');
+
+const Roll = require('Roll');
+const roll = new Roll();
+
 const rootDir = path.join(__dirname, '..');
-const libDir = path.join(rootDir, 'lib');
 const logo = fs.readFileSync(path.join(rootDir, 'logo.txt'), { encoding: 'utf-8' });
-const defaults = require(path.join(libDir, 'defaults'));
-const SaverSeed = require(path.join(libDir, 'saver-seed'));
 
 const wizardSeed = (outputDir) => {
   if (outputDir === undefined) outputDir = '.';
@@ -90,9 +93,9 @@ const wizardSeed = (outputDir) => {
 
       opts = Object.assign(opts, geneOpts);
 
-      SaverSeed.finish(outputDir, 'Do you want to save this seed? (y | n)', opts, new Date().getTime());
+      SaverSeed.finish(outputDir, 'Do you want to save this seed? (y | n)', opts, new Date().getTime(), undefined);
     });
   });
 };
 
-module.exports = wizardSeed;
+export default wizardSeed;

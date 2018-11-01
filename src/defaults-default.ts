@@ -1,8 +1,9 @@
 /* eslint-disable */
-const path = require('path');
+import * as path from 'path';
+
 const rootDir = path.join(__dirname, '..');
-const libDir = path.join(rootDir, 'lib');
-const dataDir = path.join(libDir, 'data');
+const srcDir = path.join(rootDir, 'src');
+const dataDir = path.join(srcDir, 'data');
 
 // load DNA data
 const Dragonborn = require(path.join(dataDir, 'dna-dragonborn.json'));
@@ -33,4 +34,4 @@ const defaults = {
   },
 };
 
-module.exports = defaults;
+export default defaults;

@@ -1,5 +1,6 @@
-const program = require('commander');
-const path = require('path');
+import * as program from 'commander';
+import * as path from 'path';
+
 const rootDir = path.join(__dirname, '..');
 const pinfo = require(path.join(rootDir, 'package.json'));
 

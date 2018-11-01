@@ -2,12 +2,16 @@
   "name": "genetica",
   "version": "0.4.1",
   "description": "This is a tool for using a simplified genetics system to generate inheritable traits for DnD characters.",
-  "main": "lib/genetica.js",
+  "main": "dist/genetica.js",
   "scripts": {
-    "start": "bin/genetica",
-    "test": "npm run test:mocha && npm run test:lint",
-    "test:mocha": "mocha --reporter spec 'test/**/*.js'",
-    "test:lint": "eslint ."
+    "start": "yarn run env:dev && nodemon --exec ts-node src/index.ts",
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "lint": "tslint src/**/*.ts",
+    "env:dev": "cross-env NODE_ENV=development",
+    "env:prod": "cross-env NODE_ENV=production",
+    "test": "mocha -c -S -R spec --compilers ts:ts-node/register --check-leaks",
+    "test:watch": "yarn test -- -w"
   },
   "repository": {
     "type": "git",
@@ -32,16 +36,26 @@
     "colors": "^1.3.0",
     "commander": "^2.16.0",
     "node-zip": "^1.1.1",
+    "opendnd-core": "0.0.2",
     "questions": "0.0.6",
     "roll": "^1.2.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.1",
     "chai": "^4.1.2",
+    "cross-env": "^5.2.0",
     "eslint": "^5.0.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
     "mocha": "^5.2.0",
-    "node-xlsx": "^0.11.2"
+    "node-xlsx": "^0.11.2",
+    "rimraf": "^2.6.2",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.4",
+    "yarn": "^1.10.1"
   }
 }

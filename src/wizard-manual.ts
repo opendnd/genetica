@@ -1,14 +1,16 @@
-const fs = require('fs');
+import * as path from 'path';
+import * as fs from 'fs';
+
+import Genetica from './genetica';
+import defaults from './defaults';
+import Renderer from './renderer';
+import Saver from './saver';
+
 const questions = require('questions');
 const colors = require('colors/safe');
-const path = require('path');
+
 const rootDir = path.join(__dirname, '..');
-const libDir = path.join(rootDir, 'lib');
 const logo = fs.readFileSync(path.join(rootDir, 'logo.txt'), { encoding: 'utf-8' });
-const Genetica = require(path.join(libDir, 'genetica'));
-const defaults = require(path.join(libDir, 'defaults'));
-const Renderer = require(path.join(libDir, 'renderer'));
-const Saver = require(path.join(libDir, 'saver'));
 
 const wizardManual = (outputDir) => {
   if (outputDir === undefined) outputDir = '.';
@@ -59,9 +61,9 @@ const wizardManual = (outputDir) => {
       const DNA = genetica.generate();
 
       Renderer.output(DNA);
-      Saver.finish(outputDir, 'Would you like to save your genes? (y | n)', DNA, DNA.uuid);
+      Saver.finish(outputDir, 'Would you like to save your genes? (y | n)', DNA, DNA.uuid, undefined);
     });
   });
 };
 
-module.exports = wizardManual;
+export default wizardManual;

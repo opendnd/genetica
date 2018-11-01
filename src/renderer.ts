@@ -1,4 +1,4 @@
-const colors = require('colors/safe');
+import * as colors from 'colors/safe';
 
 class Renderer {
   static leftSpace(c, n) {
@@ -91,4 +91,4 @@ class Renderer {
   }
 }
 
-module.exports = Renderer;
+export default Renderer;

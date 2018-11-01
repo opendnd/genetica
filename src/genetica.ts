@@ -1,19 +1,29 @@
-const path = require('path');
+import { DNA } from 'opendnd-core';
+import * as path from 'path';
+import * as uuidv1 from 'uuid/v1';
+
+import defaults from './defaults';
+import Saver from './saver';
+import SaverSeed from './saver-seed';
+
 const rootDir = path.join(__dirname, '..');
-const libDir = path.join(rootDir, 'lib');
 const pinfo = require(path.join(rootDir, 'package.json'));
-const defaults = require(path.join(libDir, 'defaults'));
-const Saver = require(path.join(libDir, 'saver'));
-const SaverSeed = require(path.join(libDir, 'saver-seed'));
 const Roll = require('roll');
-const uuidv1 = require('uuid/v1');
 const roll = new Roll();
 
-// this is the main class for generating genetics
+// opts for genetica
+interface GeneticaOpts {
+  race: string
+  gender: string
+  mutation?: string
+}
 
+// this is the main class for generating genetics
 class Genetica {
+  opts:GeneticaOpts
+
   // init
-  constructor(opts = {}) {
+  constructor(opts:GeneticaOpts = {} as GeneticaOpts) {
     this.opts = opts;
   }
 
@@ -33,7 +43,7 @@ class Genetica {
   }
 
   // validate the options
-  validateOpts(opts = {}) {
+  validateOpts(opts:GeneticaOpts = {} as GeneticaOpts) {
     const { races, genders } = defaults;
 
     // race
@@ -112,7 +122,7 @@ class Genetica {
 
   // reset opts
   resetOpts() {
-    this.opts = {};
+    this.opts = {} as GeneticaOpts;
   }
 
   // map chromosomes to opts
@@ -390,7 +400,7 @@ class Genetica {
   }
 
   // generate a child
-  generateChild(opts = {}, motherDNA = {}, fatherDNA = {}) {
+  generateChild(opts = {}, motherDNA:DNA = {} as DNA, fatherDNA:DNA = {} as DNA) {
     this.opts.race = motherDNA.race;
     this.validateOpts(Object.assign(this.opts, opts));
     const { race, gender } = this.opts;
@@ -457,4 +467,4 @@ class Genetica {
   }
 }
 
-module.exports = Genetica;
+export default Genetica;

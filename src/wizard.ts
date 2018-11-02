@@ -5,6 +5,7 @@ import Genetica from './genetica';
 import defaults from './defaults';
 import Renderer from './renderer';
 import Saver from './saver';
+import { DNA } from 'opendnd-core';
 
 const questions = require('questions');
 const colors = require('colors/safe');
@@ -30,11 +31,15 @@ const wizard = (outputDir) => {
       required: false,
     },
   }, (opts) => {
+    // convert the opts to the interface
+    opts.gender = defaults.genderMapping[opts.gender];
+    opts.race = { uuid: opts.race };
+    
     const genetica = new Genetica(opts);
-    const DNA = genetica.generate();
+    const result:DNA = genetica.generate();
 
-    Renderer.output(DNA);
-    Saver.finish(outputDir, 'Would you like to save your genes? (y | n)', DNA, DNA.uuid, undefined);
+    Renderer.output(result);
+    Saver.finish(outputDir, 'Would you like to save your genes? (y | n)', result, result.uuid, undefined);
   });
 };
 

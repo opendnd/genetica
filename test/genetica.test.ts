@@ -17,8 +17,8 @@ describe('Genetica', () => {
 
   it('inherits opts properly', () => {
     genetica = new Genetica({
-      race: 'Dragonborn',
-      gender: 'female',
+      race: { uuid: 'Dragonborn' },
+      gender: Genders.Female,
     });
 
     let result:DNA = genetica.generate();
@@ -27,8 +27,8 @@ describe('Genetica', () => {
     expect(result.race.uuid).to.eq('Dragonborn');
 
     result = genetica.generate({
-      race: 'Dwarf',
-      gender: 'male',
+      race: { uuid: 'Dwarf' },
+      gender: Genders.Male,
     });
     expect(result.gender).to.eq(Genders.Male);
     expect(result.race.uuid).to.eq('Dwarf');
@@ -39,8 +39,8 @@ describe('Genetica', () => {
       const result = genetica.validateOpts({});
       
       expect(result).to.be.an('object');
-      expect(result.race).to.be.a('string');
-      expect(result.gender).to.be.a('string');
+      expect(result.race.uuid).to.be.a('string');
+      expect(result.gender).to.be.a('number');
     });
 
     it('throws errors for poorly malformatted chromosome values', () => {
@@ -66,7 +66,7 @@ describe('Genetica', () => {
     it('throws errors for bad female sex chromosome', () => {
       try {
         const result = genetica.validateOpts({
-          gender: 'female',
+          gender: Genders.Female,
           'chromosome-sex': 'X1=Y1',
         });
       } catch (err) {
@@ -77,7 +77,7 @@ describe('Genetica', () => {
     it('throws errors for bad male sex chromosome', () => {
       try {
         const result = genetica.validateOpts({
-          gender: 'male',
+          gender: Genders.Male,
           'chromosome-sex': 'Y1=Y1',
         });
       } catch (err) {
@@ -88,7 +88,7 @@ describe('Genetica', () => {
     it('throws errors for large sex chromosome values', () => {
       try {
         const result = genetica.validateOpts({
-          gender: 'male',
+          gender: Genders.Male,
           'chromosome-sex': 'X100000=Y1',
         });
       } catch (err) {
@@ -99,12 +99,12 @@ describe('Genetica', () => {
 
   it('can generate a child', () => {
     const motherDNA:DNA = genetica.generate({
-      gender: 'female',
-      race: 'Dragonborn',
+      gender: Genders.Female,
+      race: { uuid: 'Dragonborn' },
     });
     const fatherDNA:DNA = genetica.generate({
-      gender: 'male',
-      race: 'Dragonborn',
+      gender: Genders.Male,
+      race: { uuid: 'Dragonborn' },
     });
 
     const result:DNA = genetica.generateChild({}, motherDNA, fatherDNA);
@@ -130,16 +130,19 @@ describe('Genetica', () => {
 
   // generate by race
   context('races', () => {
-    const testRace = (race) => {
-      it(`generates for ${race}`, () => {
+    const testRace = (raceName) => {
+      it(`generates for ${raceName}`, () => {
         genetica.resetOpts();
+
+        const race = { uuid: raceName };
+
         const motherDNA:DNA = genetica.generate({
-          gender: 'female',
+          gender: Genders.Female,
           race,
         });
         genetica.resetOpts();
         const fatherDNA:DNA = genetica.generate({
-          gender: 'male',
+          gender: Genders.Male,
           race,
         });
 

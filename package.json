@@ -6,7 +6,7 @@
   "scripts": {
     "start": "bin/genetica",
     "prebuild": "rimraf dist",
-    "build": "tsc",
+    "build": "tsc --declaration",
     "lint": "tslint src/**/*.ts",
     "env:dev": "cross-env NODE_ENV=development",
     "env:prod": "cross-env NODE_ENV=production",

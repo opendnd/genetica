@@ -1,4 +1,5 @@
 import * as colors from 'colors/safe';
+import { Genders, DNA} from 'opendnd-core';
 
 class Renderer {
   static leftSpace(c, n) {
@@ -51,17 +52,17 @@ class Renderer {
     return template;
   }
 
-  static output(DNA) {
+  static output(result:DNA) {
     const {
       version,
       chromosomes,
       race,
       gender,
       traits,
-    } = DNA;
-    let output = `\n\nHere are your genes for this ${gender} ${race} (made with Genetica v${version}): \n\n`;
+    } = result;
+    let output = `\n\nHere are your genes for this ${Genders[gender]} ${race.uuid} (made with Genetica v${version}): \n\n`;
 
-    // add start to DNA
+    // add start to result
     output += `                              ${colors.red('O')}\n`;
 
     // output each chromosome

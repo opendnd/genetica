@@ -13,8 +13,8 @@ const roll = new Roll();
 
 // opts for genetica
 interface GeneticaOpts {
-  race: string
-  gender: string
+  race?: LinkRace
+  gender?: Genders
   mutation?: string
 }
 
@@ -23,7 +23,7 @@ class Genetica {
   opts:GeneticaOpts
 
   // init
-  constructor(opts:GeneticaOpts = {} as GeneticaOpts) {
+  constructor(opts:GeneticaOpts = {}) {
     this.opts = opts;
   }
 
@@ -43,16 +43,15 @@ class Genetica {
   }
 
   // validate the options
-  validateOpts(opts:GeneticaOpts = {} as GeneticaOpts) {
+  validateOpts(opts:GeneticaOpts = {}) {
     const { races, genders } = defaults;
 
     // race
-    if (opts.race === undefined) opts.race = races.sample();
-    if (!races.includes(opts.race)) opts.race = races.sample();
+    if (opts.race === undefined) opts.race = { uuid: races.sample() };
+    if (!races.includes(opts.race.uuid)) opts.race = { uuid: races.sample() };
 
     // gender
-    if (opts.gender === undefined) opts.gender = genders.sample();
-    if (!genders.includes(opts.gender)) opts.gender = genders.sample();
+    if (opts.gender === undefined) opts.gender = defaults.genderMapping[genders.sample()];
 
     // check chromosomes
     Object.keys(opts).forEach((opt) => {
@@ -65,7 +64,7 @@ class Genetica {
         let partB = parts[1];
 
         // get the template
-        const template = defaults.DNA[opts.race];
+        const template = defaults.DNA[opts.race.uuid];
         const c = opt.replace('chromosome-', '');
 
         // assign dice value unless it's the sex chromosome
@@ -89,7 +88,7 @@ class Genetica {
 
         // check sex chromosomes
         if (opt === 'chromosome-sex') {
-          if (opts.gender === 'female') {
+          if (opts.gender === Genders.Female) {
             if (!partA.includes('X')) throw new Error(`Malformatted female sex chromosome input "${partA}"!`);
             if (!partB.includes('X')) throw new Error(`Malformatted female sex chromosome input "${partB}"!`);
 
@@ -99,7 +98,7 @@ class Genetica {
             if (partA > XdiceValue) throw new Error(`Sex chromosome value "${partA}" higher than possible dice roll of "${XdiceValue}"!`);
             if (partB > XdiceValue) throw new Error(`Sex chromosome value "${partB}" higher than possible dice roll of "${XdiceValue}"!`);
           }
-          if (opts.gender === 'male') {
+          if (opts.gender === Genders.Male) {
             if (!partA.includes('X')) throw new Error(`Malformatted male sex chromosome input "${partA}"!`);
             if (!partB.includes('Y')) throw new Error(`Malformatted male sex chromosome input "${partB}"!`);
 
@@ -122,13 +121,13 @@ class Genetica {
 
   // reset opts
   resetOpts() {
-    this.opts = {} as GeneticaOpts;
+    this.opts = {};
   }
 
   // map chromosomes to opts
   mapChromosomesToOpts(chromosomes = {}) {
     const { race } = this.opts;
-    const template = defaults.DNA[race];
+    const template = defaults.DNA[race.uuid];
     const chromosomeOpts = {};
 
     Object.keys(chromosomes).forEach((c) => {
@@ -145,7 +144,7 @@ class Genetica {
   // generate child chromosomes
   generateChildChromosomes(motherChromosomes = {}, fatherChromosomes = {}) {
     const { race, gender } = this.opts;
-    const template = defaults.DNA[race];
+    const template = defaults.DNA[race.uuid];
     const chromosomes = Object.assign({}, template.chromosomes);
 
     // assign chromosome from the mother and the father
@@ -158,7 +157,7 @@ class Genetica {
 
       // assign the X from the father and a random X from the mother
       if (dice === 'sex') {
-        if (gender === 'female') {
+        if (gender === Genders.Female) {
           chromosomes[c] = `${motherParts.sample()}=${fatherParts[0]}`;
           return;
         }
@@ -178,7 +177,7 @@ class Genetica {
   // generate parent chromosomes
   generateParentChromosomes(childChromosomes = {}) {
     const { race, gender } = this.opts;
-    const template = defaults.DNA[race];
+    const template = defaults.DNA[race.uuid];
     const Xdice = template.sex.x;
     const Ydice = template.sex.y;
     const motherChromosomes = {};
@@ -196,7 +195,7 @@ class Genetica {
       if (dice === 'sex') {
         chromosomeName = 'chromosome-sex';
 
-        if (gender === 'male') {
+        if (gender === Genders.Male) {
           const XRes = roll.roll(`1${Xdice}`).result;
 
           fatherChromosomes[chromosomeName] = `X${XRes}=${partB}`;
@@ -207,7 +206,7 @@ class Genetica {
           } else {
             motherChromosomes[chromosomeName] = `X${XRes}=${partA}`;
           }
-        } else if (gender === 'female') {
+        } else if (gender === Genders.Female) {
           const XRes = roll.roll(`1${Xdice}`).result;
           const YRes = roll.roll(`1${Ydice}`).result;
 
@@ -277,7 +276,7 @@ class Genetica {
   // generate chromosomes
   generateChromosomes() {
     const { race, gender } = this.opts;
-    const template = defaults.DNA[race];
+    const template = defaults.DNA[race.uuid];
     const Xdice = template.sex.x;
     const Ydice = template.sex.y;
 
@@ -308,7 +307,7 @@ class Genetica {
 
       // do special roll for sex chromosomes
       if (dice === 'sex') {
-        if (gender === 'female') {
+        if (gender === Genders.Female) {
           const res = roll.roll(`2${Xdice}`).rolled;
 
           chromosomes[c] = `X${res[0]}=X${res[1]}`;
@@ -332,7 +331,7 @@ class Genetica {
   // generate traits from chromosomes
   generateTraits(chromosomes = {}) {
     const { race, gender } = this.opts;
-    const template = defaults.DNA[race];
+    const template = defaults.DNA[race.uuid];
     const traits = {};
 
     // exit if the genes aren't defined yet
@@ -354,14 +353,14 @@ class Genetica {
       let rareGene = `${legendName}:C${chromosome}:`;
 
       // don't give facial hair to females
-      if ((gender === 'female') && (legendName === 'hair-facial')) return;
+      if ((gender === Genders.Female) && (legendName === 'hair-facial')) return;
 
       // female
-      if (gender === 'female') {
+      if (gender === Genders.Female) {
         a = a.replace('X', '');
         b = b.replace('X', '');
       // male
-      } else if (gender === 'male') {
+      } else if (gender === Genders.Male) {
         a = a.replace('X', '');
         b = b.replace('Y', '');
       }
@@ -374,7 +373,7 @@ class Genetica {
       if (a > b) dominant = partA;
 
       // add an extra X for female dominant genes
-      if ((gender === 'female') && (legendName === 'sex')) commonGene += 'X';
+      if ((gender === Genders.Female) && (legendName === 'sex')) commonGene += 'X';
       commonGene += dominant;
       rareGene += rolls;
 
@@ -401,7 +400,7 @@ class Genetica {
 
   // generate a child
   generateChild(opts = {}, motherDNA:DNA = {} as DNA, fatherDNA:DNA = {} as DNA) {
-    this.opts.race = motherDNA.race.uuid;
+    this.opts.race = { uuid: motherDNA.race.uuid };
     this.validateOpts(Object.assign(this.opts, opts));
     const { race, gender } = this.opts;
     const chromosomes = this.mapChromosomesToOpts(this.generateChildChromosomes(motherDNA.chromosomes, fatherDNA.chromosomes));
@@ -418,8 +417,8 @@ class Genetica {
   generateParents(DNA: DNA) {
     const { race, gender, chromosomes } = DNA;
     this.opts = {
-      race: race.uuid,
-      gender: Genders[gender],
+      race,
+      gender,
     };
 
     // generate mother and father chromosomes
@@ -427,14 +426,14 @@ class Genetica {
 
     // generate mother
     const motherOpts = {
-      gender: 'female',
+      gender: Genders.Female,
       race,
     };
     const motherDNA = this.generate(Object.assign(motherOpts, motherChromosomes));
 
     // generate father
     const fatherOpts = {
-      gender: 'male',
+      gender: Genders.Male,
       race,
     };
     const fatherDNA = this.generate(Object.assign(fatherOpts, fatherChromosomes));
@@ -446,9 +445,9 @@ class Genetica {
   }
 
   // generate a person's DNA
-  generate(opts = {}): DNA {
+  generate(opts:GeneticaOpts = {}): DNA {
     const { version } = pinfo;
-    const genOpts = this.validateOpts(Object.assign(this.opts, opts));
+    const genOpts:GeneticaOpts = this.validateOpts(Object.assign(this.opts, opts));
     const { race, gender } = genOpts;
     const chromosomes = this.generateChromosomes();
     const traits = this.generateTraits(chromosomes);
@@ -459,10 +458,8 @@ class Genetica {
     const result:DNA = {
       version,
       uuid,
-      race: {
-        uuid: race,
-      },
-      gender: defaults.genderMapping[gender],
+      race,
+      gender,
       chromosomes,
       traits,
       // TODO: add new fields

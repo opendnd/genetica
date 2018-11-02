@@ -13,4 +13,6 @@ program
   .command('child', 'generate child DNA')
   .command('parents', 'generate parents DNA')
   .command('seed', 'generate a DNA seed file')
+  .command('render', 'render a DNA result')
+  .alias('echo')
   .parse(process.argv);

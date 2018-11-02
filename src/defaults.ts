@@ -23,7 +23,6 @@ declare global {
   }
 }
 
-
 // only push unique elements
 Array.prototype.pushUnique = function(element) { 
   if (this.indexOf(element) === -1) {

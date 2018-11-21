@@ -17,7 +17,7 @@ describe('Genetica', () => {
 
   it('inherits opts properly', () => {
     genetica = new Genetica({
-      race: { uuid: 'Dragonborn' },
+      race: { uuid: 'Dragonborn', name: 'Dragonborn' },
       gender: Genders.Female,
     });
 
@@ -27,7 +27,7 @@ describe('Genetica', () => {
     expect(result.race.uuid).to.eq('Dragonborn');
 
     result = genetica.generate({
-      race: { uuid: 'Dwarf' },
+      race: { uuid: 'Dwarf', name: 'Dwarf' },
       gender: Genders.Male,
     });
     expect(result.gender).to.eq(Genders.Male);
@@ -40,7 +40,7 @@ describe('Genetica', () => {
       
       expect(result).to.be.an('object');
       expect(result.race.uuid).to.be.a('string');
-      expect(result.gender).to.be.a('number');
+      expect(result.gender).to.be.a('string');
     });
 
     it('throws errors for poorly malformatted chromosome values', () => {
@@ -100,11 +100,11 @@ describe('Genetica', () => {
   it('can generate a child', () => {
     const motherDNA:DNA = genetica.generate({
       gender: Genders.Female,
-      race: { uuid: 'Dragonborn' },
+      race: { uuid: 'Dragonborn', name: 'Dragonborn' },
     });
     const fatherDNA:DNA = genetica.generate({
       gender: Genders.Male,
-      race: { uuid: 'Dragonborn' },
+      race: { uuid: 'Dragonborn', name: 'Dragonborn' },
     });
 
     const result:DNA = genetica.generateChild({}, motherDNA, fatherDNA);
@@ -134,7 +134,7 @@ describe('Genetica', () => {
       it(`generates for ${raceName}`, () => {
         genetica.resetOpts();
 
-        const race = { uuid: raceName };
+        const race = { uuid: raceName, name: raceName };
 
         const motherDNA:DNA = genetica.generate({
           gender: Genders.Female,

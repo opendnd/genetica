@@ -1,4 +1,4 @@
-import { DNA, LinkRace, Genders } from 'opendnd-core';
+import { DNA, ILinkRace, Genders } from 'opendnd-core';
 import * as path from 'path';
 import * as uuidv1 from 'uuid/v1';
 
@@ -13,7 +13,7 @@ const roll = new Roll();
 
 // opts for genetica
 interface GeneticaOpts {
-  race?: LinkRace
+  race?: ILinkRace
   gender?: Genders
   mutation?: string
 }
@@ -47,8 +47,8 @@ class Genetica {
     const { races, genders } = defaults;
 
     // race
-    if (opts.race === undefined) opts.race = { uuid: races.sample() };
-    if (!races.includes(opts.race.uuid)) opts.race = { uuid: races.sample() };
+    if (opts.race === undefined) opts.race = { uuid: races.sample(), name: races.sample() };
+    if (!races.includes(opts.race.uuid)) opts.race = { uuid: races.sample(), name: races.sample() };
 
     // gender
     if (opts.gender === undefined) opts.gender = defaults.genderMapping[genders.sample()];
@@ -400,7 +400,7 @@ class Genetica {
 
   // generate a child
   generateChild(opts = {}, motherDNA:DNA = {} as DNA, fatherDNA:DNA = {} as DNA) {
-    this.opts.race = { uuid: motherDNA.race.uuid };
+    this.opts.race = { uuid: motherDNA.race.uuid, name: motherDNA.race.uuid };
     this.validateOpts(Object.assign(this.opts, opts));
     const { race, gender } = this.opts;
     const chromosomes = this.mapChromosomesToOpts(this.generateChildChromosomes(motherDNA.chromosomes, fatherDNA.chromosomes));
@@ -458,6 +458,7 @@ class Genetica {
     const result:DNA = {
       version,
       uuid,
+      name: uuid,
       race,
       gender,
       chromosomes,
@@ -467,9 +468,6 @@ class Genetica {
       weight: 0,
       height: 0,
       abstract: false,
-      abstractProperties: {},
-      derivation: null,
-      notes: '',
     };
 
     return result;

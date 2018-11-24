@@ -1,4 +1,5 @@
 declare global {
+  // tslint:disable-next-line
   interface Array<T> {
     pushUnique(element: T): void;
     sample(): T;

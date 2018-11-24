@@ -1,10 +1,10 @@
-import * as program from 'commander';
+import * as program from "commander";
 
-import wizardSeed from './wizard-seed';
+import wizardSeed from "./wizard-seed";
 
 // program basics
 program
-  .option('-o, --output <dir>', 'output directory')
+  .option("-o, --output <dir>", "output directory")
   .parse(process.argv);
 
 wizardSeed(program.output);

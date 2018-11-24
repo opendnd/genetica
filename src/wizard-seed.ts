@@ -1,42 +1,47 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
-import { standardQuestions, sanitizeWizardOpts } from './common';
-import defaults from './defaults';
-import SaverSeed from './saver';
-import { IGeneticaOpts } from './genetica';
-import { Categories } from 'opendnd-core';
+import {
+  Categories,
+  roll,
+} from "@opendnd/core";
+import {
+  makeQuestion,
+  sanitizeWizardOpts,
+  saveMsg,
+  standardQuestions,
+} from "./common";
+import defaults from "./defaults";
+import { IGeneticaOpts } from "./genetica";
+import SaverSeed from "./saver";
 
-const questions = require('questions');
-const colors = require('colors/safe');
+const questions = require("questions"); // tslint:disable-line
+const colors = require("colors/safe"); // tslint:disable-line
 
-const Roll = require('Roll');
-const roll = new Roll();
-
-const rootDir = path.join(__dirname, '..');
-const logo = fs.readFileSync(path.join(rootDir, 'logo.txt'), { encoding: 'utf-8' });
+const rootDir = path.join(__dirname, "..");
+const logo = fs.readFileSync(path.join(rootDir, "logo.txt"), { encoding: "utf-8" });
 
 const wizardSeed = (outputDir) => {
-  if (outputDir === undefined) outputDir = '.';
+  if (outputDir === undefined) { outputDir = "."; }
 
   // output welcome
   process.stdout.write(`\n${colors.blue(logo)}\n`);
 
   // ask a few questions
   questions.askMany(Object.assign(standardQuestions, {
-    mutation: {
-      info: colors.cyan('How much should this seed mutate? (Ex. d6 would be 1 out of 6 probability of mutation)'),
-      required: false,
-    },
+    mutation: makeQuestion(
+      "How much should this seed mutate?",
+      "(Ex. d6 would be 1 out of 6 probability of mutation)",
+    ),
   }), (opts) => {
-    let genOpts:IGeneticaOpts = sanitizeWizardOpts(opts);
+    let genOpts: IGeneticaOpts = sanitizeWizardOpts(opts);
     const template = defaults.racesDict[genOpts.race.uuid];
     const seedQuestions = {};
 
     Object.keys(template.categories).forEach((legendName) => {
       const options = [];
       Object.keys(template.genes).forEach((gene) => {
-        const parts = gene.split(':');
+        const parts = gene.split(":");
 
         // add to options if it's in the gene
         if (parts[0] === legendName) {
@@ -44,10 +49,10 @@ const wizardSeed = (outputDir) => {
         }
       });
 
-      seedQuestions[legendName] = {
-        info: colors.cyan(`Which gene do you want for ${legendName}?`) + colors.white(`\n\t - ${options.join('\n\t - ')}\n\n`),
-        required: false,
-      };
+      seedQuestions[legendName] = makeQuestion(
+        `Which gene do you want for ${legendName}?`,
+        `\n\t - ${options.join("\n\t - ")}\n\n`,
+      );
     });
 
     // ask questions about the seed
@@ -58,26 +63,26 @@ const wizardSeed = (outputDir) => {
       Object.keys(seedOpts).forEach((legendName) => {
         const chromosome = template.categories[legendName];
         let gene = seedOpts[legendName];
-        if (gene.length === 0) return; // exit if we don't have any value
+        if (gene.length === 0) { return; } // exit if we don't have any value
 
         // get a random dice roll
-        const diceRoll = roll.roll(`1d${gene}`).result;
+        const diceRoll = roll(`1d${gene}`);
 
         // XX1
-        if (gene.includes('XX') && !gene.includes('=')) {
-          gene = gene.replace('X', `X${diceRoll}=`);
+        if (gene.includes("XX") && !gene.includes("=")) {
+          gene = gene.replace("X", `X${diceRoll}=`);
 
         // Y1
-        } else if (gene.includes('Y') && !gene.includes('=')) {
+        } else if (gene.includes("Y") && !gene.includes("=")) {
           gene = `X${diceRoll}=${gene}`;
 
         // 20
-        } else if (!gene.includes('=')) {
+        } else if (!gene.includes("=")) {
           gene = `${diceRoll}=${gene}`;
         }
 
         if (legendName === Categories.Sex) {
-          geneOpts['chromosome-sex'] = gene;
+          geneOpts["chromosome-sex"] = gene;
           return;
         }
 
@@ -86,7 +91,7 @@ const wizardSeed = (outputDir) => {
 
       genOpts = Object.assign(genOpts, geneOpts);
 
-      SaverSeed.finish(outputDir, 'Do you want to save this seed? (y | n)', genOpts, new Date().getTime(), undefined);
+      SaverSeed.finish(outputDir, saveMsg("seed"), genOpts, new Date().getTime(), undefined);
     });
   });
 };

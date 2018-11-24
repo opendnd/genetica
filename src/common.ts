@@ -1,22 +1,22 @@
+import { Genders } from "@opendnd/core";
 import defaults from "./defaults";
-import { Genders } from "opendnd-core";
 import { IGeneticaOpts } from "./genetica";
 
-const colors = require("colors/safe");
+const colors = require("colors/safe"); // tslint:disable-line
 
-const { 
+const {
   races,
   genderOptions,
   raceOptions,
 } = defaults;
 
 export const sanitizeWizardOpts = (opts): IGeneticaOpts => {
-  if (!genderOptions.includes(opts.gender)) opts.gender = undefined;
-  if (opts.gender) opts.gender = Genders[opts.gender];
+  if (!genderOptions.includes(opts.gender)) { opts.gender = undefined; }
+  if (opts.gender) { opts.gender = Genders[opts.gender]; }
 
   if (opts.race) {
     Object.values(races).forEach((race) => {
-      if (race.name === opts.race) opts.race = race;
+      if (race.name === opts.race) { opts.race = race; }
     });
   }
 
@@ -28,13 +28,18 @@ export const sanitizeWizardOpts = (opts): IGeneticaOpts => {
   return opts;
 };
 
+export const makeQuestion = (question: string = "", options: string = "", required: boolean = false) => {
+  return {
+    info: colors.cyan(`${question} `) + colors.white(options),
+    required,
+  };
+};
+
 export const standardQuestions = {
-  gender: {
-    info: colors.cyan("What's this person's gender? ") + colors.white(`(${genderOptions.join(" | ")})`),
-    required: false,
-  },
-  race: {
-    info: colors.cyan("What race does this person have? ") + colors.white(`(${raceOptions.join(" | ")})`),
-    required: false,
-  },
+  gender: makeQuestion("What's this person's gender?", `(${genderOptions.join(" | ")})`),
+  race: makeQuestion("What race does this person have?", `(${raceOptions.join(" | ")})`),
+};
+
+export const saveMsg = (resource) => {
+  return `Would you like to save the ${resource}? (y | n)`;
 };

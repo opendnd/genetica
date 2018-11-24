@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { DNA, Genders, IRace, ILinkRace } from 'opendnd-core';
+import { DNA, Genders, IRace, ILinkRace } from '@opendnd/core';
 import Genetica from '../src/genetica';
 import defaults from '../src/defaults';
 

@@ -1,5 +1,5 @@
 {
-  "name": "genetica",
+  "name": "@opendnd/genetica",
   "version": "0.6.0",
   "description": "This is a tool for using a simplified genetics system to generate inheritable traits for DnD characters.",
   "main": "dist/genetica.js",
@@ -33,10 +33,10 @@
     "genetica": "./bin/genetica"
   },
   "dependencies": {
+    "@opendnd/core": "^0.2.4",
     "colors": "^1.3.0",
     "commander": "^2.16.0",
     "node-zip": "^1.1.1",
-    "opendnd-core": "^0.2.2",
     "questions": "0.0.6",
     "roll": "^1.2.0",
     "uuid": "^3.3.2"

@@ -1,5 +1,5 @@
 import * as colors from 'colors/safe';
-import { Genders, DNA} from 'opendnd-core';
+import { DNA} from 'opendnd-core';
 
 class Renderer {
   static leftSpace(c, n) {
@@ -60,7 +60,7 @@ class Renderer {
       gender,
       traits,
     } = result;
-    let output = `\n\nHere are your genes for this ${Genders[gender]} ${race.uuid} (made with Genetica v${version}): \n\n`;
+    let output = `\n\nHere are your genes for this ${gender} ${race.name} (made with Genetica v${version}): \n\n`;
 
     // add start to result
     output += `                              ${colors.red('O')}\n`;

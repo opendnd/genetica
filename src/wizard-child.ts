@@ -1,7 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-import Genetica from './genetica';
+import Genetica, { IGeneticaOpts } from './genetica';
+import { standardQuestions, sanitizeWizardOpts } from './common';
 import defaults from './defaults';
 import Renderer from './renderer';
 import Saver from './saver';
@@ -13,6 +14,8 @@ const colors = require('colors/safe');
 const rootDir = path.join(__dirname, '..');
 const logo = fs.readFileSync(path.join(rootDir, 'logo.txt'), { encoding: 'utf-8' });
 
+delete standardQuestions.race;
+
 const wizardChild = (outputDir, mother = '', father = '') => {
   if (outputDir === undefined) outputDir = '.';
 
@@ -20,12 +23,7 @@ const wizardChild = (outputDir, mother = '', father = '') => {
   process.stdout.write(`\n${colors.blue(logo)}\n`);
 
   // ask a few questions
-  questions.askMany({
-    gender: {
-      info: colors.cyan('What gender is the child? ') + colors.white(`(${defaults.genders.join(' | ')})`),
-      required: false,
-    },
-  }, (opts) => {
+  questions.askMany(standardQuestions, (opts) => {
     const motherDNA:DNA = Saver.load(mother);
     const fatherDNA:DNA = Saver.load(father);
 
@@ -35,13 +33,13 @@ const wizardChild = (outputDir, mother = '', father = '') => {
     if (fatherDNA.gender !== Genders.Male) throw new Error('The father is not male!');
 
     // add mother's race
-    opts.race = motherDNA.race;
+    opts.race = motherDNA.race.uuid;
 
     // convert the text gender to a enum
-    opts.gender = defaults.genderMapping[opts.gender];
+    const genOpts:IGeneticaOpts = sanitizeWizardOpts(opts);
 
-    const genetica = new Genetica(opts);
-    const result:DNA = genetica.generateChild(opts, motherDNA, fatherDNA);
+    const genetica = new Genetica(genOpts);
+    const result:DNA = genetica.generateChild(genOpts, motherDNA, fatherDNA);
 
     Renderer.output(result);
     Saver.finish(outputDir, 'Would you like to save your child? (y | n)', result, result.uuid, undefined);

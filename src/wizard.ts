@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import Genetica from './genetica';
-import defaults from './defaults';
+import Genetica, { IGeneticaOpts } from './genetica';
+import { standardQuestions, sanitizeWizardOpts } from './common';
 import Renderer from './renderer';
 import Saver from './saver';
 import { DNA } from 'opendnd-core';
@@ -20,22 +20,9 @@ const wizard = (outputDir) => {
   process.stdout.write(`\n${colors.blue(logo)}\n`);
 
   // ask a few questions
-  questions.askMany({
-    race: {
-      info: colors.cyan('What race of genes do you want to generate? ') + colors.white(`(${defaults.races.join(' | ')})`),
-      required: false,
-    },
-
-    gender: {
-      info: colors.cyan('What gender are these genes? ') + colors.white(`(${defaults.genders.join(' | ')})`),
-      required: false,
-    },
-  }, (opts) => {
-    // convert the opts to the interface
-    opts.gender = defaults.genderMapping[opts.gender];
-    opts.race = { uuid: opts.race };
-    
-    const genetica = new Genetica(opts);
+  questions.askMany(standardQuestions, (opts) => {
+    const genOpts:IGeneticaOpts = sanitizeWizardOpts(opts);
+    const genetica = new Genetica(genOpts);
     const result:DNA = genetica.generate();
 
     Renderer.output(result);

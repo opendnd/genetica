@@ -7,10 +7,10 @@ describe('defaults', () => {
   });
 
   it('has races', () => {
-    expect(defaults.races).to.be.an('array');
+    expect(defaults.races).to.be.an('object');
   });
 
   it('has genders', () => {
-    expect(defaults.genders).to.be.an('array');
+    expect(defaults.genderOptions).to.be.an('array');
   });
 });

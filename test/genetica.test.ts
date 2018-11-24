@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { DNA, Genders } from 'opendnd-core';
+import { DNA, Genders, IRace, ILinkRace } from 'opendnd-core';
 import Genetica from '../src/genetica';
+import defaults from '../src/defaults';
 
 let genetica;
 
@@ -17,21 +18,21 @@ describe('Genetica', () => {
 
   it('inherits opts properly', () => {
     genetica = new Genetica({
-      race: { uuid: 'Dragonborn', name: 'Dragonborn' },
+      race: Object.values(defaults.races)[0],
       gender: Genders.Female,
     });
 
     let result:DNA = genetica.generate();
 
     expect(result.gender).to.eq(Genders.Female);
-    expect(result.race.uuid).to.eq('Dragonborn');
+    expect(result.race.name).to.eq('Dragonborn');
 
     result = genetica.generate({
-      race: { uuid: 'Dwarf', name: 'Dwarf' },
+      race: Object.values(defaults.races)[1],
       gender: Genders.Male,
     });
     expect(result.gender).to.eq(Genders.Male);
-    expect(result.race.uuid).to.eq('Dwarf');
+    expect(result.race.name).to.eq('Dwarf');
   });
 
   context('validates opts', () => {
@@ -98,13 +99,15 @@ describe('Genetica', () => {
   });
 
   it('can generate a child', () => {
+    const race = Object.values(defaults.races).sample();
+
     const motherDNA:DNA = genetica.generate({
       gender: Genders.Female,
-      race: { uuid: 'Dragonborn', name: 'Dragonborn' },
+      race,
     });
     const fatherDNA:DNA = genetica.generate({
       gender: Genders.Male,
-      race: { uuid: 'Dragonborn', name: 'Dragonborn' },
+      race,
     });
 
     const result:DNA = genetica.generateChild({}, motherDNA, fatherDNA);
@@ -123,18 +126,16 @@ describe('Genetica', () => {
     expect(fatherDNA).to.be.an('object');
   });
 
-  it('getDefaults returns defaults with genders and races', () => {
-    expect(Genetica.getDefaults().genders).to.be.an('array');
-    expect(Genetica.getDefaults().races).to.be.an('array');
-  });
-
   // generate by race
   context('races', () => {
     const testRace = (raceName) => {
       it(`generates for ${raceName}`, () => {
         genetica.resetOpts();
+        let race:ILinkRace;
 
-        const race = { uuid: raceName, name: raceName };
+        Object.values(defaults.races).forEach((defaultRace) => {
+          if (raceName === defaultRace.name) race = defaultRace;
+        });
 
         const motherDNA:DNA = genetica.generate({
           gender: Genders.Female,

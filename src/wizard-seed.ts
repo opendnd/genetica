@@ -1,8 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { standardQuestions, sanitizeWizardOpts } from './common';
 import defaults from './defaults';
 import SaverSeed from './saver';
+import { IGeneticaOpts } from './genetica';
+import { Categories } from 'opendnd-core';
 
 const questions = require('questions');
 const colors = require('colors/safe');
@@ -20,27 +23,17 @@ const wizardSeed = (outputDir) => {
   process.stdout.write(`\n${colors.blue(logo)}\n`);
 
   // ask a few questions
-  questions.askMany({
-    race: {
-      info: colors.cyan('What race is this seed for? ') + colors.white(`(${defaults.races.join(' | ')})`),
-      required: true,
-    },
-
-    gender: {
-      info: colors.cyan('What gender is this seed for? ') + colors.white(`(${defaults.genders.join(' | ')})`),
-      required: true,
-    },
-
+  questions.askMany(Object.assign(standardQuestions, {
     mutation: {
       info: colors.cyan('How much should this seed mutate? (Ex. d6 would be 1 out of 6 probability of mutation)'),
       required: false,
     },
-  }, (opts) => {
-    const template = defaults.DNA[opts.race];
-
+  }), (opts) => {
+    let genOpts:IGeneticaOpts = sanitizeWizardOpts(opts);
+    const template = defaults.racesDict[genOpts.race.uuid];
     const seedQuestions = {};
 
-    Object.keys(template.legend).forEach((legendName) => {
+    Object.keys(template.categories).forEach((legendName) => {
       const options = [];
       Object.keys(template.genes).forEach((gene) => {
         const parts = gene.split(':');
@@ -63,7 +56,7 @@ const wizardSeed = (outputDir) => {
 
       // iterate through the responses and input the roll on the chromosome
       Object.keys(seedOpts).forEach((legendName) => {
-        const chromosome = template.legend[legendName];
+        const chromosome = template.categories[legendName];
         let gene = seedOpts[legendName];
         if (gene.length === 0) return; // exit if we don't have any value
 
@@ -83,7 +76,7 @@ const wizardSeed = (outputDir) => {
           gene = `${diceRoll}=${gene}`;
         }
 
-        if (legendName === 'sex') {
+        if (legendName === Categories.Sex) {
           geneOpts['chromosome-sex'] = gene;
           return;
         }
@@ -91,9 +84,9 @@ const wizardSeed = (outputDir) => {
         geneOpts[`chromosome-${chromosome}`] = gene;
       });
 
-      opts = Object.assign(opts, geneOpts);
+      genOpts = Object.assign(genOpts, geneOpts);
 
-      SaverSeed.finish(outputDir, 'Do you want to save this seed? (y | n)', opts, new Date().getTime(), undefined);
+      SaverSeed.finish(outputDir, 'Do you want to save this seed? (y | n)', genOpts, new Date().getTime(), undefined);
     });
   });
 };

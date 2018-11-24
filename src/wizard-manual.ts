@@ -1,11 +1,12 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-import Genetica from './genetica';
+import Genetica, { IGeneticaOpts } from './genetica';
+import { standardQuestions, sanitizeWizardOpts } from './common';
 import defaults from './defaults';
 import Renderer from './renderer';
 import Saver from './saver';
-import { DNA } from 'opendnd-core';
+import { DNA, Categories } from 'opendnd-core';
 
 const questions = require('questions');
 const colors = require('colors/safe');
@@ -20,18 +21,9 @@ const wizardManual = (outputDir) => {
   process.stdout.write(`\n${colors.blue(logo)}\n`);
 
   // ask a few questions
-  questions.askMany({
-    race: {
-      info: colors.cyan('What race of genes do you want to generate? ') + colors.white(`(${defaults.races.join(' | ')})`),
-      required: true,
-    },
-
-    gender: {
-      info: colors.cyan('What gender are these genes? ') + colors.white(`(${defaults.genders.join(' | ')})`),
-      required: true,
-    },
-  }, (opts) => {
-    const template = defaults.DNA[opts.race];
+  questions.askMany(standardQuestions, (opts) => {
+    const tplOpts:IGeneticaOpts = sanitizeWizardOpts(opts);
+    const template = defaults.racesDict[tplOpts.race.uuid];
     const Xdice = template.sex.x;
     const Ydice = template.sex.y;
 
@@ -40,7 +32,7 @@ const wizardManual = (outputDir) => {
     Object.keys(template.chromosomes).forEach((c) => {
       const dice = template.chromosomes[c];
 
-      if (dice === 'sex') {
+      if (dice === Categories.Sex) {
         geneQuestions['chromosome-sex'] = {
           info: colors.cyan(`What rolls do you want for the sex Chromosome ${c}? `) + colors.white(`ex: X1=Y1 (dice are X: ${Xdice}, Y: ${Ydice})`),
           required: true,
@@ -57,13 +49,10 @@ const wizardManual = (outputDir) => {
 
     // ask questions about the genes
     questions.askMany(geneQuestions, (geneOpts) => {
-      opts = Object.assign(opts, geneOpts);
+      let genOpts:IGeneticaOpts = sanitizeWizardOpts(geneOpts);
+      genOpts = Object.assign(tplOpts, genOpts);
 
-      // convert the opts to the interface
-      opts.gender = defaults.genderMapping[opts.gender];
-      opts.race = { uuid: opts.race };
-
-      const genetica = new Genetica(opts);
+      const genetica = new Genetica(genOpts);
       const result:DNA = genetica.generate();
 
       Renderer.output(result);

@@ -64,3 +64,5 @@ jspm_packages
 ~$Tiefling.xlsx
 
 dist
+
+.DS_Store
